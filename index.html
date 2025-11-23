@@ -35,9 +35,7 @@
 <div class="images" id="imagesContainer"></div>
 
 <script>
-  const SHEET_ID = '1IPqPScVRLt3_UzERy3LD3_Zb_KAt_
-
-pgrVo1MG8R8k_Q';
+  const SHEET_ID = '1IPqPScVRLt3_UzERy3LD3_Zb_KAt_pgrVo1MG8R8k_Q';
   let priceData = {};
 
   function extractDriveId(link) {
@@ -48,7 +46,9 @@ pgrVo1MG8R8k_Q';
 
   function makeImageUrl(link) {
     const id = extractDriveId(link);
-    return id ? `https://drive.google.com/uc?export=view&id=${id}` : link;
+    return id ? `https://drive.google.com/uc?export=view&
+
+id=${id}` : link;
   }
 
   async function loadPrices() {
