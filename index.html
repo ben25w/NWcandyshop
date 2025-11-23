@@ -1,0 +1,98 @@
+<!doctype html>
+<meta charset='utf-8'>
+<title>What Can I Buy?</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+  body { font-family: Arial; text-align: center; padding: 20px; background: #f0f8ff; }
+  h1 { color: #333; }
+  .keyboard { display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; margin: 30px auto; width: fit-content; }
+  button { padding: 30px; font-size: 24px; cursor: pointer; border: none; border-radius: 
+
+10px; background: #4CAF50; color: white; font-weight: bold; }
+  button:hover { background: #45a049; }
+  .clear-btn { background: #ff6b6b; margin-top: 20px; }
+  .clear-btn:hover { background: #ff5252; }
+  .price-tag { font-size: 20px; margin-top: 20px; font-weight: bold; }
+  .images { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+  img { max-width: 100%; border-radius: 8px; }
+</style>
+
+<h1>What Can I Buy? 💰</h1>
+
+<div class="keyboard">
+  <button onclick="showPrice(1)">1</button>
+  <button onclick="showPrice(2)">2</button>
+  <button onclick="showPrice(3)">3</button>
+  <button onclick="showPrice(4)">4</button>
+  <button onclick="showPrice(5)">5</button>
+  <button onclick="showPrice(6)">6</button>
+  <button onclick="showPrice(7)">7</button>
+  <button onclick="showPrice(8)">8</button>
+  <button onclick="showPrice(9)">9</button>
+</div>
+
+<button class="clear-btn" onclick="clearPrice()">Clear</button>
+
+<div class="price-tag" id="priceText"></div>
+<div class="images" id="imagesContainer"></div>
+
+<script>
+  const SHEET_ID = '1IPqPScVRLt3_UzERy3LD3_Zb_KAt_pgrVo1MG8R8k_Q';
+  let priceData = {};
+
+  function extractDriveId(link) {
+    if (!link) return null;
+    const match = link.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : null;
+  }
+
+  function makeImageUrl(link) {
+    const id = extractDriveId(link);
+    return id ? `https://drive.google.com/uc?export=view&id=${id}` : link;
+  }
+
+  async function loadPrices() {
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+      const response = await fetch(url);
+      const text = await response.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      
+      json.table.rows.forEach(row => {
+        const price = row.c[0]?.v;
+        const images = [row.c[1]?.v, row.c[2]?.v, row.c[3]?.v].filter(link => link);
+        if (price) {
+          priceData[price] = {
+            price: '£' + price,
+            images: images.map(makeImageUrl)
+          };
+        }
+      });
+    } catch (error) {
+      console.error('Error loading prices:', error);
+    }
+  }
+
+  function showPrice(num) {
+    const data = priceData[num];
+    if (!data) return;
+    
+    document.getElementById('priceText').textContent = `You have £${num}. Here's what you can buy:`;
+    
+    const container = document.getElementById('imagesContainer');
+    container.innerHTML = '';
+    
+    data.images.forEach(url => {
+      const img = document.createElement('img');
+      img.src = url;
+      container.appendChild(img);
+    });
+  }
+
+  function clearPrice() {
+    document.getElementById('priceText').textContent = '';
+    document.getElementById('imagesContainer').innerHTML = '';
+  }
+
+  loadPrices();
+</script>
