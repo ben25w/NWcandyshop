@@ -13,6 +13,8 @@
   .price-tag { font-size: 20px; margin-top: 20px; font-weight: bold; }
   .images { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
   img { max-width: 100%; border-radius: 8px; }
+
+
 </style>
 
 <h1>What Can I Buy? ฿</h1>
@@ -46,9 +48,7 @@
 
   function makeImageUrl(link) {
     const id = extractDriveId(link);
-    return id ? `https://drive.google.com/uc?export=view&
-
-id=${id}` : link;
+    return id ? `https://lh3.googleusercontent.com/d/${id}=w500` : link;
   }
 
   async function loadPrices() {
@@ -84,7 +84,9 @@ id=${id}` : link;
     container.innerHTML = '';
     
     data.images.forEach(url => {
-      const img = document.createElement('img');
+      const img = 
+
+document.createElement('img');
       img.src = url;
       container.appendChild(img);
     });
